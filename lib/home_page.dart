@@ -10,19 +10,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController _controller1 = TextEditingController();
+  final TextEditingController _controller2 = TextEditingController();
+
   String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
   var alphabetList = List.empty(growable: true);
-
   var numbers = List.empty(growable: true);
-
   var numbersList = List.empty(growable: true);
-
   var connection1 = {};
-
   var connection2 = {};
-
+  var output2 = List.empty(growable: true);
+  var numbers2 = List.empty(growable: true);
   var output = List.empty(growable: true);
+
+  void clearData() {
+    alphabetList.clear();
+    numbers.clear();
+    numbers2.clear();
+    numbersList.clear();
+    connection1.clear();
+    connection2.clear();
+    output.clear();
+    output2.clear();
+    _controller1.clear();
+    _controller2.clear();
+  }
 
   void addLetters() {
     for (var i = 0; i < alphabet.length; i++) {
@@ -49,8 +62,6 @@ class _HomePageState extends State<HomePage> {
     addLetters();
     addLetters();
 
-    var output2 = List.empty(growable: true);
-    var numbers2 = List.empty(growable: true);
     for (var i = 0; i < inputText.length; i++) {
       numbers2.add(findKey(inputText[i]) - 1);
     }
@@ -117,6 +128,7 @@ class _HomePageState extends State<HomePage> {
                 onChanged: (value) {
                   globals.decryptValue = value;
                 },
+                controller: _controller1,
                 decoration: const InputDecoration(
                   hintText: "Encrypted text...",
                   labelText: "Enter encrypted text:",
@@ -129,6 +141,7 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () {
                 globals.outputValue = decryptText(globals.decryptValue);
+                setState(() {});
               },
               child: const Text(
                 "DECRYPT",
@@ -143,6 +156,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 onChanged: (value) {},
+                controller: _controller2,
                 onSubmitted: (value) {
                   globals.copyValue = value;
                 },
@@ -169,26 +183,22 @@ class _HomePageState extends State<HomePage> {
                     letterSpacing: 5),
               ),
             ),
+            ElevatedButton(
+              onPressed: () {
+                clearData();
+              },
+              child: const Text(
+                "CLEAR",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    letterSpacing: 5),
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),
-            // Expanded(child: Container()),
-            // const Padding(
-            //   padding: EdgeInsets.all(8.0),
-            //   child: Text(
-            //     "Made with love,\nand lots of code",
-            //     textAlign: TextAlign.center,
-            //     style: TextStyle(
-            //       fontSize: 14,
-            //       fontWeight: FontWeight.w300,
-            //       letterSpacing: 2,
-            //     ),
-            //   ),
-            // ),
-            // const Icon(Icons.favorite),
-            // const SizedBox(
-            //   height: 10,
-            // ),
           ],
         ),
       ),
