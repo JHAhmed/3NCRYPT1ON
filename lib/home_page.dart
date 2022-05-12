@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
 
   int findKey(String inputKey) {
     var key = connection1.keys
-        .firstWhere((k) => connection1[k] == inputKey, orElse: () => null);
+        .firstWhere((k) => connection1[k] == inputKey, orElse: () => 500);
 
     return key;
   }
@@ -63,10 +63,19 @@ class _HomePageState extends State<HomePage> {
     addLetters();
 
     for (var i = 0; i < inputText.length; i++) {
-      numbers2.add(findKey(inputText[i]) - 1);
+      if (inputText[i] == "\\") {
+        numbers2.add(100);
+      } else {
+        numbers2.add(findKey(inputText[i]) - 1);
+      }
     }
+
     for (var i = 0; i < numbers2.length; i++) {
-      output2.add(findValue(numbers2[i]));
+      if (numbers2[i] == 100) {
+        output2.add(" ");
+      } else {
+        output2.add(findValue(numbers2[i]));
+      }
     }
 
     log(output2.join().toString());
@@ -83,15 +92,24 @@ class _HomePageState extends State<HomePage> {
     addLetters();
 
     for (var i = 0; i < inputText.length; i++) {
-      alphabetList.add(inputText[i]);
-      numbers.add(findKey(inputText[i]));
+      if (inputText[i] == " ") {
+        alphabetList.add("\\");
+        numbers.add(100);
+      } else {
+        alphabetList.add(inputText[i]);
+        numbers.add(findKey(inputText[i]));
+      }
     }
 
     for (var i = 0; i < numbers.length; i++) {
       numbers[i] += 1;
-      output.add(findValue(numbers[i]));
+      if (numbers[i] < 100) {
+        output.add(findValue(numbers[i]));
+      } else {
+        output.add("\\");
+      }
     }
-
+    log(output.toString());
     return output.join().toString();
   }
 
@@ -126,6 +144,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 onChanged: (value) {
+                  value = value.toLowerCase();
                   globals.decryptValue = value;
                 },
                 controller: _controller1,
@@ -142,6 +161,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 globals.outputValue = decryptText(globals.decryptValue);
                 setState(() {});
+                clearData();
               },
               child: const Text(
                 "DECRYPT",
@@ -158,6 +178,7 @@ class _HomePageState extends State<HomePage> {
                 onChanged: (value) {},
                 controller: _controller2,
                 onSubmitted: (value) {
+                  value = value.toLowerCase();
                   globals.copyValue = value;
                 },
                 decoration: const InputDecoration(
@@ -173,6 +194,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Clipboard.setData(
                     ClipboardData(text: encryptText(globals.copyValue)));
+                clearData();
               },
               child: const Text(
                 "COPY",
@@ -183,22 +205,19 @@ class _HomePageState extends State<HomePage> {
                     letterSpacing: 5),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                clearData();
-              },
-              child: const Text(
-                "CLEAR",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                    letterSpacing: 5),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     clearData();
+            //   },
+            //   child: const Text(
+            //     "CLEAR",
+            //     style: TextStyle(
+            //         color: Colors.white,
+            //         fontWeight: FontWeight.w700,
+            //         fontSize: 14,
+            //         letterSpacing: 5),
+            //   ),
+            // ),
           ],
         ),
       ),
